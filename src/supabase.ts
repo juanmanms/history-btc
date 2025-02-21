@@ -1,10 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL || Deno.env.get("VITE_SUPABASE_URL");
-const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  Deno.env.get("VITE_SUPABASE_ANON_KEY");
+const supabaseUrl = Deno.env.get("VITE_SUPABASE_URL");
+const supabaseAnonKey = Deno.env.get("VITE_SUPABASE_ANON_KEY");
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error("Missing Supabase environment variables");
