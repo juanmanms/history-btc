@@ -1,4 +1,3 @@
-import React from 'react';
 import { Table, Button, List, Card } from 'antd';
 import { Transaction } from '../interfaces/types';
 import { ColumnsType } from 'antd/es/table';
@@ -68,7 +67,6 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
             rowKey="id"
             pagination={{ pageSize: 5 }}
             scroll={{ x: true }}
-            rowClassName={(record, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
         />
     ) : (
         <List
