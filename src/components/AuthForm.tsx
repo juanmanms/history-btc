@@ -35,8 +35,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <div className="flex items-center justify-center mb-6">
                         <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                            <Bitcoin className="text-yellow-500" />
-                            Historico BTC
+                            <img src="https://firebasestorage.googleapis.com/v0/b/botigas-7c71f.appspot.com/o/juanmanms.com%2Fproyectos%2FlogoHMCsolo.png?alt=media&token=08bbc7f9-b50f-4a30-8b5d-354724cb08a0" alt="Logo" className="w-8 h-8" />
+                            BMC
                         </h1>
                     </div>
 
