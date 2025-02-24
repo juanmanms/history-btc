@@ -4,10 +4,11 @@ import axios from 'axios';
 import { supabase } from './supabase';
 import AuthForm from './components/AuthForm';
 import Header from './components/Header';
-import TransactionForm from './components/TransactionForm';
+import TransactionModal from './components/TransactionModal';
 import TransactionList from './components/TransactionList';
 import Summary from './components/Summary';
 import ProfitDisplay from './components/ProfitDisplay';
+import CryptoCarousel from './components/CryptoCarousel';
 import { Transaction } from './interfaces/types';
 import { message } from 'antd';
 
@@ -76,11 +77,12 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Header currentBTCPrice={currentBTCPrice} onLogout={() => supabase.auth.signOut()} />
-        <TransactionForm onTransactionAdded={fetchTransactions} />
+        <Header onLogout={() => supabase.auth.signOut()} />
+        <TransactionModal onTransactionAdded={fetchTransactions} />
         <ProfitDisplay transactions={transactions} currentBTCPrice={currentBTCPrice} />
         <TransactionList transactions={transactions} onDeleteTransaction={handleDeleteTransaction} />
         <Summary transactions={transactions} />
+        <CryptoCarousel />
       </div>
     </div>
   );
