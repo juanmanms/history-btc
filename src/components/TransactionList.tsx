@@ -1,8 +1,9 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, List, Card } from 'antd';
 import { Transaction } from '../interfaces/types';
 import { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined } from '@ant-design/icons';
+import { useMediaQuery } from 'react-responsive';
 
 interface TransactionListProps {
     transactions: Transaction[];
@@ -10,6 +11,8 @@ interface TransactionListProps {
 }
 
 const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDeleteTransaction }) => {
+    const isDesktop = useMediaQuery({ minWidth: 768 });
+
     const columns: ColumnsType<Transaction> = [
         {
             title: 'Fecha',
@@ -58,13 +61,58 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
         },
     ];
 
-    return (
+    return isDesktop ? (
         <Table
             dataSource={transactions}
             columns={columns}
             rowKey="id"
             pagination={{ pageSize: 5 }}
+            scroll={{ x: true }}
             rowClassName={(record, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
+        />
+    ) : (
+        <List
+            grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 2,
+                lg: 3,
+                xl: 3,
+                xxl: 4,
+            }}
+            dataSource={transactions}
+            renderItem={(item) => (
+                <List.Item>
+                    <Card
+                        title={`Transacción del ${new Date(item.date).toLocaleDateString("es-ES")}`}
+                        extra={<Button type="text" icon={<DeleteOutlined />} onClick={() => onDeleteTransaction(item.id)} danger />}
+                    >
+                        <div className="space-y-2">
+                            <div>
+                                <strong>Euros:</strong>
+                                <span style={{ float: 'right' }}>{item.euros.toLocaleString("es-ES")} €</span>
+                            </div>
+                            <div>
+                                <strong>BTC:</strong>
+                                <span style={{ float: 'right' }}>{item.btc_amount.toFixed(8)}</span>
+                            </div>
+                            <div>
+                                <strong>Precio Compra:</strong>
+                                <span style={{ float: 'right' }}>{item.purchase_price.toLocaleString("es-ES")} €</span>
+                            </div>
+                            <div>
+                                <strong>Wallet:</strong>
+                                <span style={{ float: 'right' }}>{item.wallet}</span>
+                            </div>
+                        </div>
+                    </Card>
+                </List.Item>
+            )}
+            pagination={{
+                pageSize: 5,
+                showSizeChanger: false,
+            }}
         />
     );
 };
