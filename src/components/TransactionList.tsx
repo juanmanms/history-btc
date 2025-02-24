@@ -1,8 +1,11 @@
+import React, { useEffect, useState } from 'react';
 import { Table, Button, List, Card } from 'antd';
 import { Transaction } from '../interfaces/types';
 import { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
+import { supabase } from '../supabase';
+import { Crypto } from '../interfaces/types';
 
 interface TransactionListProps {
     transactions: Transaction[];
@@ -10,7 +13,23 @@ interface TransactionListProps {
 }
 
 const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDeleteTransaction }) => {
+    const [cryptos, setCryptos] = useState<Crypto[]>([]);
     const isDesktop = useMediaQuery({ minWidth: 768 });
+
+    useEffect(() => {
+        const fetchCryptos = async () => {
+            const { data, error } = await supabase.from('cryptos').select('*');
+            if (error) console.error('Error fetching cryptos:', error);
+            else setCryptos(data);
+        };
+
+        fetchCryptos();
+    }, []);
+
+    const getCryptoName = (cryptoId: number) => {
+        const crypto = cryptos.find((c) => c.id === cryptoId);
+        return crypto ? `${crypto.name} (${crypto.symbol})` : 'Desconocido';
+    };
 
     const columns: ColumnsType<Transaction> = [
         {
@@ -27,7 +46,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
             render: (value: number) => `${value.toLocaleString('es-ES')} €`,
         },
         {
-            title: 'BTC',
+            title: 'Cantidad de activo',
             dataIndex: 'btc_amount',
             key: 'btc_amount',
             align: 'right',
@@ -44,6 +63,12 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
             title: 'Wallet',
             dataIndex: 'wallet',
             key: 'wallet',
+        },
+        {
+            title: 'Tipo de Activo',
+            dataIndex: 'crypto_id',
+            key: 'crypto_id',
+            render: (cryptoId: number) => getCryptoName(cryptoId),
         },
         {
             title: 'Acciones',
@@ -92,7 +117,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
                                 <span style={{ float: 'right' }}>{item.euros.toLocaleString("es-ES")} €</span>
                             </div>
                             <div>
-                                <strong>BTC:</strong>
+                                <strong>Activo</strong>
                                 <span style={{ float: 'right' }}>{item.btc_amount.toFixed(8)}</span>
                             </div>
                             <div>

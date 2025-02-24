@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
 import axios from 'axios';
 import { supabase } from './supabase';
@@ -9,8 +9,9 @@ import TransactionList from './components/TransactionList';
 import Summary from './components/Summary';
 import ProfitDisplay from './components/ProfitDisplay';
 import { Transaction } from './interfaces/types';
+import { message } from 'antd';
 
-function App() {
+const App: React.FC = () => {
   const [currentBTCPrice, setCurrentBTCPrice] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [session, setSession] = useState<Session | null>(null);
@@ -55,6 +56,19 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleDeleteTransaction = async (id: string) => {
+    const { error } = await supabase
+      .from('transactions')
+      .delete()
+      .eq('id', id);
+
+    if (error) console.error('Error deleting transaction:', error);
+    else {
+      message.success('Transacción eliminada correctamente');
+      fetchTransactions();
+    }
+  };
+
   if (!session) {
     return <AuthForm onAuthSuccess={fetchTransactions} />;
   }
@@ -65,11 +79,11 @@ function App() {
         <Header currentBTCPrice={currentBTCPrice} onLogout={() => supabase.auth.signOut()} />
         <TransactionForm onTransactionAdded={fetchTransactions} />
         <ProfitDisplay transactions={transactions} currentBTCPrice={currentBTCPrice} />
-        <TransactionList transactions={transactions} onDeleteTransaction={fetchTransactions} />
+        <TransactionList transactions={transactions} onDeleteTransaction={handleDeleteTransaction} />
         <Summary transactions={transactions} />
       </div>
     </div>
   );
-}
+};
 
 export default App;
